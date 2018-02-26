@@ -1,6 +1,8 @@
 
 # coding: utf-8
 
+# # Count PL value in each field and total
+
 # In[1]:
 
 
@@ -8,7 +10,7 @@ import json
 from collections import Counter
 import os
 
-PATH = "../Steeve_data/candidates_keyword/"
+PATH = "../Steeve_data/no_filter_Dice/can/"
 fields_posts_PL =[] # PL of each post in every fileds
 total_PL = []
 
@@ -40,24 +42,29 @@ def Count_TF(field,field_name):
     
     field_post = field[field_name]
     
-#     for post_id in field_post[:10]:
+    # for post_id in field_post[:300]:
     for post_id in field_post:
         pl = map(lambda el: el.lower(), post_id["PL"])
         post_cnt = Counter(pl)
-
+        
+        ################  TESTING -- regards repeat pl as 1 time ###################
+        for i in post_cnt:
+            post_cnt[i] = 1
+        ################  TESTING -- regards repeat pl as 1 time ###################
         
         # post_id use jobTitle as ID temporarily
-        posts_PL[field_name]=write_to_js(posts_PL,field_name,post_id["jobTitle"],post_cnt)
+        posts_PL[field_name]=write_to_js(posts_PL,field_name,post_id["jobTitle"],post_cnt,post_id["url"])
 
     
     return posts_PL
 
-def write_to_js(posts_PL,field_name,post_id,cnt):
+def write_to_js(posts_PL,field_name,post_id,cnt,url):
 
 
     posts_PL[field_name].append({  
-    "jobTitle":post_id ,
-    "PL_value":cnt })
+    "jobTitle":post_id,
+    "PL_value":cnt,
+    "url":url})
     
     return posts_PL[field_name]
 
@@ -66,6 +73,8 @@ def Count_Total_TF(fields_posts_PL):
     Total_PL =Counter()
     Total_PL_VALUE =[]
     Total_Comparison = {}  
+    ##########   TESTING -- get certain pl  
+    # jobN = []
         
     for i,f in enumerate(fields_posts_PL): # each feild
  
@@ -73,8 +82,19 @@ def Count_Total_TF(fields_posts_PL):
         fpost = Counter()
         Total_Comparison[field_name] = []
         
+        print(field_name)
+        
+        ##########   TESTING -- get certain pl  
+        # jobN.append(field_name)
+        ##########
+        
         for f_post in f[field_name]:
             fpost += f_post["PL_value"]
+            
+        ##########   TESTING -- get certain pl   ##########
+        #    if (f_post["PL_value"].get("css")):
+        #        jobN.append((f_post["url"]))
+        ###########   TESTING -- get certain pl  ##########
 
         Total_PL_VALUE.append(fpost)
         Total_PL += fpost
@@ -85,16 +105,18 @@ def Count_Total_TF(fields_posts_PL):
             f[word] = f.get(word)/ Total_PL.get(word)
 #             print(f)
 #         Total_Comparison.append(f)
-#         print(fpost)
             
-        Total_Comparison[field_name]=write_to_js(Total_Comparison,field_name,field_name,f)
-#         S.append(field_Com_PL)
+        Total_Comparison[field_name]=write_to_js(Total_Comparison,field_name,Total_PL_VALUE,f,Total_PL_VALUE)
         
-            
     return Total_Comparison
-    
-# print(feild_value[0]["Back_End"][0][])
 
+    ##########   TESTING -- get certain pl   ##########
+    # return Total_Comparison,jobN
+
+
+# ## Count PL value
+# ##### Total_Comparison_Fields.txt for total comparison
+# ##### PL_posts_in_+field_name+.txt for each fields 
 
 # In[3]:
 
@@ -108,28 +130,41 @@ if __name__ == "__main__":
         posts_PL = Count_TF(field,field_name)
         fields_posts_PL.append(posts_PL) 
 
-        with open('../Steeve_data/PL_value/PL_posts_in_'+field_name+'.txt', 'w') as f:
+        with open('../Steeve_data/no_filter_Dice/pl_count_1/PL_posts_in_'+field_name+'.txt', 'w') as f:
             json.dump(posts_PL, f)
             
     Total_Fields_PL_V= Count_Total_TF(fields_posts_PL)
-    with open('../Steeve_data/PL_value/Total_Comparison_Fields.txt', 'w') as f:
+
+########### TESTING -- get certain pl ########### 
+#    Total_Fields_PL_V, b = Count_Total_TF(fields_posts_PL)
+#    with open('../Steeve_data/PL_value/css.txt', 'w') as f:
+#        json.dump(b, f)
+########### TESTING -- get certain pl ###########
+    with open('../Steeve_data/no_filter_Dice/pl_count_1/Total_Comparison_Fields.txt', 'w') as f:
             json.dump(Total_Fields_PL_V, f)
 
 
-# In[4]:
+# ## TESTING
+
+# In[ ]:
 
 
-text = file_data[0][feild_names[0]]
+asd = json.load(open('../Steeve_data/PL_value/total_testing.txt'))
+a = sorted(asd['Front End Developer'][0]["PL_value"].items(), key=lambda k_v: k_v[1], reverse=True)[:90]
+#     print(asd['Backend-NY'][0]["PL_value"])
+print(a)
 
-# for i in text:
-#     print(i["PL"])
+
+# In[ ]:
 
 
-# sss =  Count_TF(text)
-sss = Count_TF(text,feild_names[0])
-# print(sss[0])
-print(sss[1])
-Count_TF(field[feild_names[i]],feild_names[i][1])#TOATL
+b = sorted(asd[field_names[0]][0]["PL_value"].items(), key=lambda k_v: k_v[1], reverse=True)[:90]
+print(b)
 
-Counter(words).most_common(10)
+
+# In[ ]:
+
+
+print(asd['Backend'][0]["PL_value"].get("web"))
+print(asd['Front End Developer'][0]["PL_value"].get("web"))
 
