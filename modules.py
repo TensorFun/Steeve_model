@@ -47,7 +47,7 @@ def pick_k_jobs(user_pls, posts, k=100):
 
 # In[28]:
 
-pick_k_jobs(['A','B','C'], [{'id': 1, 'PL': ['A','B']}, {'id': 12, 'PL': ['D']}, {'id': 3, 'PL': ['E']}])
+# pick_k_jobs(['A','B','C'], [{'id': 1, 'PL': ['A','B']}, {'id': 12, 'PL': ['D']}, {'id': 3, 'PL': ['E']}])
 
 
 # In[ ]:
