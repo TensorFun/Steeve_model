@@ -24,28 +24,26 @@ def norm_pls(pls):
     return [pl.lower().replace(' ', '_').replace('.js', '') for pl in pls]
 
 
-# In[26]:
+# In[41]:
 
-from sklearn.metrics.pairwise import cosine_similarity
-
-def pick_k_jobs(user_pls, posts, k=100):
+def top_k(target_pls, dataset, k=100):
     '''
     Params:
-    - user_pls: ['pl_A', 'pl_B', 'pl_C']
-    - posts: every post's pls in specific field [{id, pl}, {id, pl}, {id, pl}]
+    - target_pls (from user's pls or company requirement): ['pl_A', 'pl_B', 'pl_C']
+    - dataset: every post's or candidate's pls [{id, pl}, {id, pl}, {id, pl}]
     - k: return top k jobs and must match at least one pl
     
-    Return: Top 100 jobs in suitable order
+    Return: Top k or 100 jobs in suitable order
     '''
     matches = [len(set(user_pls).intersection(set(post['PL']))) for post in posts]
 
-    top_jobs = sorted(zip(posts, matches), key=lambda pair: pair[1], reverse=True)
-    top_k_jobs = filter(lambda pair: pair[1] > 0, top_jobs[:k])
-    top_k_jobs = list(map(lambda pair: pair[0], top_k_jobs))
-    return top_k_jobs
+    top = sorted(zip(posts, matches), key=lambda pair: pair[1], reverse=True)
+    top_k = filter(lambda pair: pair[1] > 0, top_jobs[:k])
+    top_k = list(map(lambda pair: pair[0], top_k_jobs))
+    return top_k
 
 
-# In[28]:
+# In[42]:
 
 # pick_k_jobs(['A','B','C'], [{'id': 1, 'PL': ['A','B']}, {'id': 12, 'PL': ['D']}, {'id': 3, 'PL': ['E']}])
 
