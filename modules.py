@@ -3,6 +3,7 @@
 
 # In[1]:
 
+
 # Extract PL
 
 from flashtext import KeywordProcessor
@@ -24,9 +25,10 @@ def norm_pls(pls):
     return [pl.lower().replace(' ', '_').replace('.js', '') for pl in pls]
 
 
-# In[41]:
+# In[4]:
 
-def top_k(target_pls, dataset, k=100):
+
+def pick_top_k(target_pls, dataset, k=100):
     '''
     Params:
     - target_pls (from user's pls or company requirement): ['pl_A', 'pl_B', 'pl_C']
@@ -35,25 +37,16 @@ def top_k(target_pls, dataset, k=100):
     
     Return: Top k or 100 jobs in suitable order
     '''
-    matches = [len(set(user_pls).intersection(set(post['PL']))) for post in posts]
+    matches = [len(set(target_pls).intersection(set(each['PL']))) for each in dataset]
 
-    top = sorted(zip(posts, matches), key=lambda pair: pair[1], reverse=True)
-    top_k = filter(lambda pair: pair[1] > 0, top_jobs[:k])
-    top_k = list(map(lambda pair: pair[0], top_k_jobs))
+    top = sorted(zip(dataset, matches), key=lambda pair: pair[1], reverse=True)
+    top_k = filter(lambda pair: pair[1] > 0, top[:k])
+    top_k = list(map(lambda pair: pair[0], top_k))
     return top_k
 
 
-# In[42]:
-
-# pick_k_jobs(['A','B','C'], [{'id': 1, 'PL': ['A','B']}, {'id': 12, 'PL': ['D']}, {'id': 3, 'PL': ['E']}])
+# In[6]:
 
 
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
+# pick_top_k(['A','B','C'], [{'id': 1, 'PL': ['A','B']}, {'id': 12, 'PL': ['A', 'B', 'C' ,'D']}, {'id': 3, 'PL': ['E']}])
 
