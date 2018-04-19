@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # In[2]:
@@ -6,6 +5,9 @@
 import numpy as np
 from sklearn import feature_extraction, svm, metrics
 from pyfasttext import FastText
+
+import pickle 
+
 
 class SVM:
     def __init__(self, TFIDF): # TODO: plz give me the model or using global singleton
@@ -36,7 +38,13 @@ class SVM:
     def predict(self, post):
         return self.svc.predict(self.to_feature([post]))
         
-
+    def save_model(self):
+        with open('steevebot/save/svm.pickle', 'wb') as f:
+            pickle.dump(self.svc, f)
+    
+    def restore_model(self):
+        with open('steevebot/save/svm.pickle', 'rb') as f:
+            self.svc = pickle.load(f)
 
 # In[ ]:
 
@@ -44,6 +52,3 @@ class SVM:
 
 
 # In[ ]:
-
-
-
